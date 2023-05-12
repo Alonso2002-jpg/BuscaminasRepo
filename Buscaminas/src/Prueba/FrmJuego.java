@@ -276,16 +276,10 @@ public class FrmJuego extends JFrame {
 	    	imagen.setIcon(new ImageIcon(getClass().getResource("saludo (1).png")));
 	    }
 	
-	@Override
-	public void paint(Graphics g) {
-		ImageIcon imagen=new ImageIcon(getClass().getResource("fondobusca.jpg"));
-		g.drawImage(imagen.getImage(), 0,0,getWidth(),getHeight(),this);
-		setOpacity(0.9f);
-		super.paint(g);
-	}
+	
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
-    	setUndecorated(false);
+    	
     	logoInicio = new javax.swing.JLabel();
     	inicioJuego = new javax.swing.JButton();
         instrucciones = new javax.swing.JButton();

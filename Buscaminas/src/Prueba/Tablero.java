@@ -14,10 +14,9 @@ public class Tablero {
 	
 	int numCasillasAbierta;
 	boolean juegoTerminado;
-	
+	//Explicacion de los Consumer
 	private Consumer<List<Casilla>> partidaPerdida;
 	private Consumer<List<Casilla>> partidaGanada;
-	
 	private Consumer<Casilla> casillaAbierta;
 
 	public Tablero(int numFila,int numCol, int numMinas) {
@@ -28,6 +27,7 @@ public class Tablero {
 		crearCasillas();
 	}
 	
+	//Creacion de casillas
 	public void crearCasillas() {
 		for(int i = 0; i<casillas.length;i++) {
 			for(int j=0; j<casillas[i].length;j++) {
@@ -36,6 +36,8 @@ public class Tablero {
 		}
 		crearMinas();
 	}
+	
+	//Creacion de Minas
 	public void crearMinas() {
 		int minasCreadas=0;
 		while(minasCreadas!=numMinas) {
@@ -50,20 +52,6 @@ public class Tablero {
 	}
 	
 
-	public void mostrar() {
-		for (int i = 0; i < casillas.length; i++) {
-			for (int j = 0; j < casillas[i].length; j++) {
-				if (casillas[i][j].isMina() && casillas[i][j].isEncontrada()) {
-					System.out.print(" * ");
-				}else if(casillas[i][j].isEncontrada() && !casillas[i][j].isEncontrada()){
-					System.out.print(" "+casillas[i][j].getMinasCerca()+" ");
-				}else {
-					System.out.print(" # ");
-				}
-			}
-			System.out.println();
-		}
-	}
 	
 	public void mostrarTodo() {
 		for (int i = 0; i < casillas.length; i++) {
@@ -81,6 +69,8 @@ public class Tablero {
 				System.out.println("");
 			}
 	}
+	
+	//Metodo que devuelve una lista con las casillas cercanas a una Casilla especifica.
 	private List<Casilla> obtenerCasillasCerca(int posFil, int posCol){
 		List<Casilla> listCasillas= new ArrayList<>();
 		for (int i = 0; i < 8; i++) {
@@ -150,25 +140,35 @@ public class Tablero {
 		return casMinadas;
 	}
 	
+	//Metodo importante!
 	public void seleccionarCasilla(int posFila,int posCol) {
 		casillaAbierta.accept(casillas[posFila][posCol]);
-		
-		if (casillas[posFila][posCol].isMina()) {
+		//Aqui verificamos que el juego no haya terminado
+		//O que la casilla no sea mina.
+		//De ser asi envia las casillas minadas al Consumer 'partidaPerdida'.
+		if (partidaPerdida(posFila, posCol)) {
 			setJuegoTerminado(true);
 			partidaPerdida.accept(obtenerCasillasMinadas());
 			
-		}else if(casillas[posFila][posCol].getMinasCerca()==0) {
-			List<Casilla> casillasAlredor=obtenerCasillasCerca(posFila, posCol);
+		}else //Las recursividad solo ocurre si las minas alredor de la casilla son = 0.
+			if(casillas[posFila][posCol].getMinasCerca()==0) {
+			//Se obtienen las casillas alredor de esa Casilla.
+			List<Casilla> casillasAlrededor=obtenerCasillasCerca(posFila, posCol);
+			//marca la casilla principal con el metodo abrriendola.
 			marcarCasilla(posFila, posCol);
-			for (Casilla casilla : casillasAlredor) {
+			//Recorre las casillas alrededor de la Casilla principal.
+			for (Casilla casilla : casillasAlrededor) {
+				//Si la casilla alrededor de la principal no esta abierta llama a la recursividad
 				if (!casilla.isAbierta()) {
 					seleccionarCasilla(casilla.getNumFil(), casilla.getNumCol());
 				}
 			}
-		}else {
+		}//En caso la casilla tenga minas cerca solo lo abre.
+			else {
 			marcarCasilla(posFila, posCol);
 		}
-		
+		//Aqui se evalua que la partida no se haya ganado, de haberse ganado se declara el juego terminado como True
+		//Y se envian al consumer 'partidaGanada' las casillas minadas.
 		if (partidaGanada()) {
 			setJuegoTerminado(true);
 			partidaGanada.accept(obtenerCasillasMinadas());
@@ -180,6 +180,10 @@ public class Tablero {
 			casillas[posFila][posCol].setAbierta(true);
 			numCasillasAbierta++;
 		}
+	}
+	
+	public boolean partidaPerdida(int posFil,int posCol) {
+		return casillas[posFil][posCol].isMina();
 	}
 	public boolean partidaGanada() {
 		return numCasillasAbierta>=(numfila*numCol)-numMinas;

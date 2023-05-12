@@ -4,12 +4,15 @@ import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -56,19 +59,23 @@ public class FrmJuego extends JFrame {
     private void crearTableroJuego() {
     	
     	tableroJuego=new Tablero(numFilas,numCol,numMinas);
+    	
 //    	tableroJuego.setPartidaPerdida(new Consumer<List<Casilla>>() {
 //			
 //			@Override
 //			public void accept(List<Casilla> t) {
 //				for (Casilla casMina : t) {
 //					botonesTab[casMina.getNumFil()][casMina.getNumCol()].setText("*");
+//					botonesTab[casMina.getNumFil()][casMina.getNumCol()].setBackground(Color.red);
+//		    		botonesTab[casMina.getNumFil()][casMina.getNumCol()].setBorder(null);
+//		    		deshabilitarCasillas();
 //				}
 //			}
 //		});
 
     	tableroJuego.setPartidaPerdida((List<Casilla> t) -> {
     		t.forEach(casMina ->{
-    		botonesTab[casMina.getNumFil()][casMina.getNumCol()].setText("*");
+    		botonesTab[casMina.getNumFil()][casMina.getNumCol()].setIcon(new ImageIcon(getClass().getResource("minaotra.png")));
     		botonesTab[casMina.getNumFil()][casMina.getNumCol()].setBackground(Color.red);
     		botonesTab[casMina.getNumFil()][casMina.getNumCol()].setBorder(null);
     		deshabilitarCasillas();
@@ -85,16 +92,20 @@ public class FrmJuego extends JFrame {
     		};
 		});	
     	
-//    	tableroJuego.setCasillaAbierta((Casilla t) ->{
-//    		botonesTab[t.getNumFil()][t.getNumCol()].setEnabled(false);
-//    		botonesTab[t.getNumFil()][t.getNumCol()].setText(Integer.toString(t.getMinasCerca()));
-//    	});
+    	tableroJuego.setCasillaAbierta((Casilla t) ->{
+    		botonesTab[t.getNumFil()][t.getNumCol()].setEnabled(false);
+    		if (!t.isMina()) {
+    			botonesTab[t.getNumFil()][t.getNumCol()].setText(Integer.toString(t.getMinasCerca()));
+			}
+    		
+    	});
     	
     	tableroJuego.setPartidaGanada((List<Casilla> t)->{
     		for (Casilla casilla : t) {
     			t.forEach(casMina ->botonesTab[casMina.getNumFil()][casMina.getNumCol()].setText(":)"));
 			}
     	});
+    	
     	tableroJuego.mostrarTodo();
     }
     
@@ -184,11 +195,11 @@ public class FrmJuego extends JFrame {
     }
     
     private void elegirDificultad(int num) {
-    	int dif=num;
+    	int dif=num;	
     		switch (dif) {
-    		case 1 ->{numFilas=8; numCol=8; numMinas=10;}
-    		case 2 ->{numFilas=16; numCol=16; numMinas=35;}
-    		case 3 ->{numFilas=16; numCol=32; numMinas=45;}
+    		case 1 ->{numFilas=8; numCol=8; numMinas=10;setSize(500,400);}
+    		case 2 ->{numFilas=16; numCol=16; numMinas=35;setSize(800,650);}
+    		case 3 ->{numFilas=16; numCol=32; numMinas=45;setSize(1250,650);}
     		}
     		botonesTab= new JButton[numFilas][numCol];	
     	juegoNuevo();
@@ -264,9 +275,17 @@ public class FrmJuego extends JFrame {
 	public void regresarImagen() {
 	    	imagen.setIcon(new ImageIcon(getClass().getResource("saludo (1).png")));
 	    }
+	
+	@Override
+	public void paint(Graphics g) {
+		ImageIcon imagen=new ImageIcon(getClass().getResource("fondobusca.jpg"));
+		g.drawImage(imagen.getImage(), 0,0,getWidth(),getHeight(),this);
+		setOpacity(0.9f);
+		super.paint(g);
+	}
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
-    	
+    	setUndecorated(false);
     	logoInicio = new javax.swing.JLabel();
     	inicioJuego = new javax.swing.JButton();
         instrucciones = new javax.swing.JButton();
@@ -310,10 +329,15 @@ public class FrmJuego extends JFrame {
         chooseDif.setText("Cambiar Dificultad");
         chooseDif.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
+            	setSize(847,469);
             	limpiarTodo();
             	eleccionDifi();
             }
         });
+        
+        this.setTitle("Buscaminas");
+        Image icon=new ImageIcon(getClass().getResource("icono.jpg")).getImage();
+        setIconImage(icon);
         jMenu1.add(initNewGame);
         jMenu1.add(chooseDif);
         

@@ -3,7 +3,6 @@ package Prueba;
 public class Casilla {
 	private int numFil,numCol;
 	private boolean mina;
-	private boolean encontrada;
 	
 	private boolean abierta;
 	private int minasCerca;
@@ -12,11 +11,12 @@ public class Casilla {
 		this.numFil=numFil;
 		this.numCol=numCol;
 		mina=false;
-		encontrada=false;
 	}
+	
 	void aumentarMinasCerca() {
 		minasCerca++;
 	}
+	
 	public int getNumFil() {
 		return numFil;
 	}
@@ -34,12 +34,6 @@ public class Casilla {
 	}
 	public void setMina(boolean mina) {
 		this.mina = mina;
-	}
-	public boolean isEncontrada() {
-		return encontrada;
-	}
-	public void setEncontrada(boolean encontrada) {
-		this.encontrada = encontrada;
 	}
 	public int getMinasCerca() {
 		return minasCerca;

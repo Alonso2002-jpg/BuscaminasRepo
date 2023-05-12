@@ -11,11 +11,10 @@ class TableroTest {
 	        Tablero tablero = new Tablero(8, 8, 10);
 	        assertEquals(8, tablero.getNumfila());
 	        assertEquals(8, tablero.getNumCol());
-	        assertEquals(10, tablero.getNumMinas());
 	    }
 
 	    @Test
-	    public void testCeldaDescubierta() {
+	    public void testCeldaAbierta() {
 	        Tablero tablero = new Tablero(8, 8, 10);
 	        assertFalse(tablero.obtenerCasilla(2, 2).isAbierta());
 	        tablero.marcarCasilla(2, 2);

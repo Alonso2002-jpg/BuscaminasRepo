@@ -2,8 +2,11 @@ package Prueba;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -21,6 +24,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
@@ -191,15 +195,15 @@ public class FrmJuego extends JFrame {
         Dificil.setLocation(550,200);
         getContentPane().add(Dificil);
         
-        imagen.setIcon(new javax.swing.ImageIcon(getClass().getResource("saludo (1).png")));
+        imagen.setIcon(new javax.swing.ImageIcon(getClass().getResource("saludo.png")));
     }
     
     private void elegirDificultad(int num) {
     	int dif=num;	
     		switch (dif) {
-    		case 1 ->{numFilas=8; numCol=8; numMinas=10;setSize(500,400);}
-    		case 2 ->{numFilas=16; numCol=16; numMinas=35;setSize(800,650);}
-    		case 3 ->{numFilas=16; numCol=32; numMinas=45;setSize(1250,650);}
+    		case 1 ->{numFilas=8; numCol=8; numMinas=10;setSize(450,400);}
+    		case 2 ->{numFilas=16; numCol=16; numMinas=35;setSize(700,650);}
+    		case 3 ->{numFilas=16; numCol=32; numMinas=45;setSize(1150,650);}
     		}
     		botonesTab= new JButton[numFilas][numCol];	
     	juegoNuevo();
@@ -214,11 +218,19 @@ public class FrmJuego extends JFrame {
     }
     private void cargarBotones() {
     	limpiarTodo();
-    	int posXRef=25;
-    	int posYRef=25;
+    	int posXRef=100;
+    	int posYRef=85;
     	int ancho=30;
     	int alto=30;
-    	
+    	JLabel principal=new JLabel();
+    	principal.setSize(getWidth(),80);
+    	principal.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+    	imagenPar=new JLabel();
+    	imagenPar.setSize(80, 80);
+    	imagenPar.setLocation((getWidth()/2)-50,0);
+    	imagenPar.setIcon(new ImageIcon(getClass().getResource("felizPar.png")));
+    	principal.add(imagenPar);
+    	getContentPane().add(principal);
     	
     	for (int i = 0; i < botonesTab.length; i++) {
 			for (int j = 0; j < botonesTab[i].length; j++) {
@@ -228,6 +240,7 @@ public class FrmJuego extends JFrame {
 				
 				if(i==0 && j==0) {
 					botonesTab[i][j].setBounds(posXRef,posYRef,ancho,alto);
+					
 				}else if(i==0 && j!=0) {
 					botonesTab[i][j].setBounds(
 							botonesTab[i][j-1].getX()+botonesTab[i][j-1].getWidth(),
@@ -236,18 +249,47 @@ public class FrmJuego extends JFrame {
 					botonesTab[i][j].setBounds(
 							botonesTab[i-1][j].getX(),botonesTab[i-1][j].getY()+botonesTab[i-1][j].getHeight(),ancho,alto);
 				}
-				botonesTab[i][j].addActionListener(new ActionListener() {
+				botonesTab[i][j].addMouseListener(new MouseListener() {
+
+					@Override
+					public void mousePressed(MouseEvent e) {
+						// TODO Auto-generated method stub
+						imagenPar.setIcon(new ImageIcon(getClass().getResource("sorprendidapar.png")));
+					}
 					
 					@Override
-					public void actionPerformed(ActionEvent e) {
+					public void mouseExited(MouseEvent e) {
+						// TODO Auto-generated method stub
+						if (!tableroJuego.juegoTerminado) {
+							imagenPar.setIcon(new ImageIcon(getClass().getResource("felizPar.png")));
+						}else {
+							imagenPar.setIcon(new ImageIcon(getClass().getResource("caritaPerdio.png")));
+						}
+					}
+
+					@Override
+					public void mouseClicked(MouseEvent e) {
 						// TODO Auto-generated method stub
 						clickBoton(e);
 					}
-				
+
+					@Override
+					public void mouseReleased(MouseEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void mouseEntered(MouseEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
 				});
 				getContentPane().add(botonesTab[i][j]);
 			}
 		}
+    	
+    	
     }
     
     private void descargarBotones(){
@@ -260,23 +302,24 @@ public class FrmJuego extends JFrame {
         }
     }
     
-	private void clickBoton(ActionEvent e) {
+	private void clickBoton(MouseEvent e) {
 		JButton boton=(JButton) e.getSource();
 		String[] cordenada= boton.getName().split(",");
 		int posFila=Integer.parseInt(cordenada[0]);
 		int posColum=Integer.parseInt(cordenada[1]);
 		tableroJuego.seleccionarCasilla(posFila, posColum);
 	}
+	
 	public void limpiarTodo() {
 	    	getContentPane().removeAll();
 	    	getContentPane().repaint();
 	    }
 	
 	public void regresarImagen() {
-	    	imagen.setIcon(new ImageIcon(getClass().getResource("saludo (1).png")));
+	    	imagen.setIcon(new ImageIcon(getClass().getResource("saludo.png")));
 	    }
 	
-	
+
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
     	
@@ -414,5 +457,7 @@ public class FrmJuego extends JFrame {
     private javax.swing.JButton Dificil;
     private javax.swing.JButton facil;
     private javax.swing.JLabel imagen;
+    private javax.swing.JLabel imagenPar;
+    private javax.swing.JLabel contador;
     private javax.swing.JButton medio;
 }

@@ -1,5 +1,7 @@
 package Prueba;
 
+import java.util.Timer;
+
 public class Casilla {
 	private int numFil,numCol;
 	private boolean mina;
@@ -48,5 +50,5 @@ public class Casilla {
 		this.abierta = abierta;
 	}
 	
-	
+
 }
